@@ -46,6 +46,41 @@ class ChartsScreen extends StatelessWidget {
     return categoryData;
   }
 
+  List<BarChartGroupData>
+    getCategoryBarData() {
+
+    final categoryData =
+        getCategoryExpenses();
+
+    int x = 0;
+
+    return categoryData.entries
+        .map(
+          (entry) {
+
+            final data =
+                BarChartGroupData(
+              x: x++,
+
+              barRods: [
+
+                BarChartRodData(
+                  toY: entry.value,
+
+                  color:
+                      Colors.blue,
+
+                  width: 18,
+                ),
+              ],
+            );
+
+            return data;
+          },
+        )
+        .toList();
+  }
+
   static const List<Color> chartColors = [
     Colors.red,
     Colors.orange,
@@ -204,6 +239,84 @@ class ChartsScreen extends StatelessWidget {
               ),
 
             const SizedBox(height: 20),
+
+          const SizedBox(height: 30),
+
+            const Center(
+              child: Text(
+                "Category Expense Bar Chart",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight:
+                      FontWeight.bold,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            if (categoryData.isNotEmpty)
+
+              SizedBox(
+                height: 300,
+
+                child: BarChart(
+                  BarChartData(
+
+                    borderData:
+                        FlBorderData(
+                      show: false,
+                    ),
+
+                    titlesData:
+                        FlTitlesData(
+                      leftTitles:
+                          const AxisTitles(
+                        sideTitles:
+                            SideTitles(
+                          showTitles:
+                              false,
+                        ),
+                      ),
+
+                      bottomTitles:
+                          AxisTitles(
+                        sideTitles:
+                            SideTitles(
+                          showTitles:
+                              true,
+
+                          getTitlesWidget:
+                              (value,
+                                  meta) {
+
+                            final keys =
+                                categoryData
+                                    .keys
+                                    .toList();
+
+                            if (value
+                                    .toInt() <
+                                keys.length) {
+
+                              return Text(
+                                keys[value
+                                    .toInt()],
+                              );
+                            }
+
+                            return const Text(
+                                "");
+                          },
+                        ),
+                      ),
+                    ),
+
+                    barGroups:
+                        getCategoryBarData(),
+                  ),
+                ),
+              ),
 
             Card(
               child: ListTile(

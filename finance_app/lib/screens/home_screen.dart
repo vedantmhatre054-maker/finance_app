@@ -63,6 +63,33 @@ class _HomeScreenState
     final remainingBudget =
         budget - expense;
 
+        String warningMessage = "";
+        Color warningColor = Colors.transparent;
+        IconData warningIcon = Icons.check_circle;
+
+        if (budget > 0) {
+
+          if (expense >= budget) {
+
+            warningMessage =
+                "Budget Exceeded by ₹${(expense - budget).toStringAsFixed(2)}";
+
+            warningColor = Colors.red;
+
+            warningIcon = Icons.warning;
+
+          } else if (budgetProgress >= 0.8) {
+
+            warningMessage =
+                "Warning: ${(budgetProgress * 100).toStringAsFixed(1)}% of budget used";
+
+            warningColor = Colors.orange;
+
+            warningIcon = Icons.warning_amber;
+
+          }
+        }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -71,9 +98,8 @@ class _HomeScreenState
         centerTitle: true,
       ),
 
-      body: Padding(
-        padding:
-            const EdgeInsets.all(16),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
 
         child: Column(
           children: [
@@ -321,6 +347,47 @@ class _HomeScreenState
               ),
             ),
 
+            if (warningMessage.isNotEmpty)
+
+  Card(
+    elevation: 5,
+
+    child: Container(
+      width: double.infinity,
+
+      padding:
+          const EdgeInsets.all(16),
+
+      child: Row(
+        children: [
+
+          Icon(
+            warningIcon,
+            color: warningColor,
+            size: 35,
+          ),
+
+          const SizedBox(width: 15),
+
+          Expanded(
+            child: Text(
+              warningMessage,
+
+              style: TextStyle(
+                color: warningColor,
+                fontSize: 16,
+                fontWeight:
+                    FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+
+const SizedBox(height: 15),
+
             const SizedBox(height: 25),
 
             const Align(
@@ -338,20 +405,22 @@ class _HomeScreenState
             ),
 
             const SizedBox(height: 10),
+                      AppData.transactions.isEmpty
 
-            Expanded(
-              child:
-                  AppData.transactions.isEmpty
+                          ? const Center(
+                              child: Text(
+                                "No transactions yet",
+                              ),
+                            )
 
-                      ? const Center(
-                          child: Text(
-                            "No transactions yet",
-                          ),
-                        )
+                          : ListView.builder(
+                              shrinkWrap: true,
 
-                      : ListView.builder(
-                          itemCount:
-                              AppData.transactions
+                              physics:
+                                  const NeverScrollableScrollPhysics(),
+
+                              itemCount:               
+                                  AppData.transactions
                                           .length >
                                       5
                                   ? 5
@@ -370,9 +439,9 @@ class _HomeScreenState
                                       index],
                             );
                           },
-                        ),
-            ),
+                          ),
           ],
+         
         ),
       ),
 

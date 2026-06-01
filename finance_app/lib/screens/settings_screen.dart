@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../main.dart';
 import 'budget_screen.dart';
+
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -11,13 +14,17 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState
     extends State<SettingsScreen> {
 
-  bool darkMode = true;
-
   @override
   Widget build(BuildContext context) {
+
+    final appState =
+        FinanceTrackerApp.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Settings"),
+        title: const Text(
+          "Settings",
+        ),
       ),
 
       body: ListView(
@@ -26,8 +33,13 @@ class _SettingsScreenState
           const SizedBox(height: 10),
 
           const ListTile(
-            leading: Icon(Icons.account_circle),
-            title: Text("Finance Tracker"),
+            leading:
+                Icon(Icons.account_circle),
+
+            title: Text(
+              "Finance Tracker",
+            ),
+
             subtitle: Text(
               "Professional Edition",
             ),
@@ -36,12 +48,15 @@ class _SettingsScreenState
           const Divider(),
 
           SwitchListTile(
-            value: darkMode,
+            value: appState.isDarkMode,
 
-            onChanged: (value) {
-              setState(() {
-                darkMode = value;
-              });
+            onChanged: (value) async {
+
+              await appState.changeTheme(
+                value,
+              );
+
+              setState(() {});
             },
 
             title: const Text(
@@ -55,47 +70,59 @@ class _SettingsScreenState
 
           const Divider(),
 
-            ListTile(
-              leading: const Icon(
-                Icons.savings,
-              ),
-
-              title: const Text(
-                "Budget Goal",
-              ),
-
-              subtitle: const Text(
-                "Set Monthly Budget",
-              ),
-
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                size: 18,
-              ),
-
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        const BudgetScreen(),
-                  ),
-                );
-              },
+          ListTile(
+            leading: const Icon(
+              Icons.savings,
             ),
+
+            title: const Text(
+              "Budget Goal",
+            ),
+
+            subtitle: const Text(
+              "Set Monthly Budget",
+            ),
+
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
+
+            onTap: () {
+              Navigator.push(
+                context,
+
+                MaterialPageRoute(
+                  builder: (context) =>
+                      const BudgetScreen(),
+                ),
+              );
+            },
+          ),
+
           const Divider(),
 
           const ListTile(
             leading: Icon(Icons.info),
-            title: Text("Version"),
-            subtitle: Text("1.0.0"),
+
+            title: Text(
+              "Version",
+            ),
+
+            subtitle: Text(
+              "2.0.0",
+            ),
           ),
 
           const Divider(),
 
           const ListTile(
             leading: Icon(Icons.code),
-            title: Text("Developer"),
+
+            title: Text(
+              "Developer",
+            ),
+
             subtitle: Text(
               "Vedant Mhatre",
             ),
@@ -105,35 +132,43 @@ class _SettingsScreenState
 
           const ListTile(
             leading: Icon(Icons.storage),
+
             title: Text(
               "Storage",
             ),
+
             subtitle: Text(
-              "Local Storage Coming Soon",
+              "Shared Preferences",
             ),
           ),
 
           const Divider(),
 
           const ListTile(
-            leading: Icon(Icons.picture_as_pdf),
+            leading:
+                Icon(Icons.picture_as_pdf),
+
             title: Text(
               "PDF Export",
             ),
+
             subtitle: Text(
-              "Coming Soon",
+              "Available",
             ),
           ),
 
           const Divider(),
 
           const ListTile(
-            leading: Icon(Icons.table_chart),
+            leading:
+                Icon(Icons.table_chart),
+
             title: Text(
               "CSV Export",
             ),
+
             subtitle: Text(
-              "Coming Soon",
+              "Available",
             ),
           ),
         ],
