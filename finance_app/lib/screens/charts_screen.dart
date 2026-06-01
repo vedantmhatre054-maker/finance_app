@@ -30,10 +30,40 @@ class ChartsScreen extends StatelessWidget {
     return expense;
   }
 
+  Map<String, double> getCategoryExpenses() {
+    Map<String, double> categoryData = {};
+
+    for (var transaction in AppData.transactions) {
+      if (transaction.type == "Expense") {
+        categoryData.update(
+          transaction.category,
+          (value) => value + transaction.amount,
+          ifAbsent: () => transaction.amount,
+        );
+      }
+    }
+
+    return categoryData;
+  }
+
+  static const List<Color> chartColors = [
+    Colors.red,
+    Colors.orange,
+    Colors.blue,
+    Colors.green,
+    Colors.purple,
+    Colors.teal,
+    Colors.pink,
+    Colors.amber,
+  ];
+
   @override
   Widget build(BuildContext context) {
     final income = getIncome();
     final expense = getExpense();
+    final balance = income - expense;
+
+    final categoryData = getCategoryExpenses();
 
     return Scaffold(
       appBar: AppBar(
@@ -42,37 +72,58 @@ class ChartsScreen extends StatelessWidget {
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
+
         child: Column(
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
+
           children: [
 
-            const Text(
-              "Income vs Expense",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            const Center(
+              child: Text(
+                "Income vs Expense",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight:
+                      FontWeight.bold,
+                ),
               ),
             ),
 
             const SizedBox(height: 20),
 
             SizedBox(
-              height: 300,
+              height: 280,
               child: PieChart(
                 PieChartData(
+                  centerSpaceRadius: 50,
+
                   sections: [
 
                     PieChartSectionData(
-                      value: income == 0 ? 1 : income,
+                      value:
+                          income == 0
+                              ? 1
+                              : income,
+
                       title: "Income",
-                      radius: 100,
+
                       color: Colors.green,
+
+                      radius: 100,
                     ),
 
                     PieChartSectionData(
-                      value: expense == 0 ? 1 : expense,
+                      value:
+                          expense == 0
+                              ? 1
+                              : expense,
+
                       title: "Expense",
-                      radius: 100,
+
                       color: Colors.red,
+
+                      radius: 100,
                     ),
                   ],
                 ),
@@ -81,16 +132,98 @@ class ChartsScreen extends StatelessWidget {
 
             const SizedBox(height: 30),
 
+            const Center(
+              child: Text(
+                "Expense Categories",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight:
+                      FontWeight.bold,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            if (categoryData.isEmpty)
+
+              const Center(
+                child: Padding(
+                  padding:
+                      EdgeInsets.all(20),
+                  child: Text(
+                    "No Expense Data",
+                  ),
+                ),
+              )
+
+            else
+
+              SizedBox(
+                height: 300,
+
+                child: PieChart(
+                  PieChartData(
+                    centerSpaceRadius:
+                        45,
+
+                    sections:
+                        categoryData.entries
+                            .toList()
+                            .asMap()
+                            .entries
+                            .map(
+                              (entry) {
+
+                                final index =
+                                    entry.key;
+
+                                final item =
+                                    entry.value;
+
+                                return PieChartSectionData(
+                                  value:
+                                      item.value,
+
+                                  title:
+                                      item.key,
+
+                                  color:
+                                      chartColors[
+                                          index %
+                                              chartColors.length],
+
+                                  radius:
+                                      90,
+                                );
+                              },
+                            )
+                            .toList(),
+                  ),
+                ),
+              ),
+
+            const SizedBox(height: 20),
+
             Card(
               child: ListTile(
                 leading: const Icon(
                   Icons.arrow_downward,
+                  color: Colors.green,
                 ),
-                title: const Text("Total Income"),
+
+                title: const Text(
+                  "Total Income",
+                ),
+
                 trailing: Text(
                   "₹${income.toStringAsFixed(2)}",
+
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                    fontWeight:
+                        FontWeight.bold,
+                    color:
+                        Colors.green,
                   ),
                 ),
               ),
@@ -100,12 +233,20 @@ class ChartsScreen extends StatelessWidget {
               child: ListTile(
                 leading: const Icon(
                   Icons.arrow_upward,
+                  color: Colors.red,
                 ),
-                title: const Text("Total Expense"),
+
+                title: const Text(
+                  "Total Expense",
+                ),
+
                 trailing: Text(
                   "₹${expense.toStringAsFixed(2)}",
+
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                    fontWeight:
+                        FontWeight.bold,
+                    color: Colors.red,
                   ),
                 ),
               ),
@@ -116,11 +257,22 @@ class ChartsScreen extends StatelessWidget {
                 leading: const Icon(
                   Icons.account_balance_wallet,
                 ),
-                title: const Text("Current Balance"),
+
+                title: const Text(
+                  "Current Balance",
+                ),
+
                 trailing: Text(
-                  "₹${(income - expense).toStringAsFixed(2)}",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                  "₹${balance.toStringAsFixed(2)}",
+
+                  style: TextStyle(
+                    fontWeight:
+                        FontWeight.bold,
+
+                    color:
+                        balance >= 0
+                            ? Colors.green
+                            : Colors.red,
                   ),
                 ),
               ),

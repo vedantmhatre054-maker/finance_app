@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../data/app_data.dart';
 import '../screens/add_transaction_screen.dart';
 import '../widgets/transaction_tile.dart';
@@ -7,16 +8,21 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreen> createState() =>
+      _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState
+    extends State<HomeScreen> {
 
   double get income {
     double total = 0;
 
-    for (var transaction in AppData.transactions) {
-      if (transaction.type == "Income") {
+    for (var transaction
+        in AppData.transactions) {
+
+      if (transaction.type ==
+          "Income") {
         total += transaction.amount;
       }
     }
@@ -27,8 +33,11 @@ class _HomeScreenState extends State<HomeScreen> {
   double get expense {
     double total = 0;
 
-    for (var transaction in AppData.transactions) {
-      if (transaction.type == "Expense") {
+    for (var transaction
+        in AppData.transactions) {
+
+      if (transaction.type ==
+          "Expense") {
         total += transaction.amount;
       }
     }
@@ -42,21 +51,43 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final budget =
+        AppData.monthlyBudget;
+
+    final budgetProgress =
+        budget > 0
+            ? expense / budget
+            : 0.0;
+
+    final remainingBudget =
+        budget - expense;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Finance Tracker"),
+        title: const Text(
+          "Finance Tracker",
+        ),
         centerTitle: true,
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding:
+            const EdgeInsets.all(16),
+
         child: Column(
           children: [
 
+            // BALANCE CARD
+
             Card(
               elevation: 5,
+
               child: Padding(
-                padding: const EdgeInsets.all(20),
+                padding:
+                    const EdgeInsets.all(
+                        20),
+
                 child: Column(
                   children: [
 
@@ -67,13 +98,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 10),
+                    const SizedBox(
+                        height: 10),
 
                     Text(
                       "₹${balance.toStringAsFixed(2)}",
-                      style: const TextStyle(
+
+                      style:
+                          const TextStyle(
                         fontSize: 32,
-                        fontWeight: FontWeight.bold,
+                        fontWeight:
+                            FontWeight
+                                .bold,
                       ),
                     ),
                   ],
@@ -83,32 +119,47 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const SizedBox(height: 20),
 
+            // INCOME & EXPENSE
+
             Row(
               children: [
 
                 Expanded(
                   child: Card(
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding:
+                          const EdgeInsets
+                              .all(16),
+
                       child: Column(
                         children: [
 
                           const Icon(
-                            Icons.arrow_downward,
-                            color: Colors.green,
+                            Icons
+                                .arrow_downward,
+                            color:
+                                Colors.green,
                           ),
 
-                          const SizedBox(height: 8),
+                          const SizedBox(
+                              height: 8),
 
-                          const Text("Income"),
+                          const Text(
+                            "Income",
+                          ),
 
-                          const SizedBox(height: 5),
+                          const SizedBox(
+                              height: 5),
 
                           Text(
                             "₹${income.toStringAsFixed(2)}",
-                            style: const TextStyle(
-                              color: Colors.green,
-                              fontSize: 22,
+
+                            style:
+                                const TextStyle(
+                              color: Colors
+                                  .green,
+                              fontSize:
+                                  22,
                             ),
                           ),
                         ],
@@ -122,26 +173,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   child: Card(
                     child: Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding:
+                          const EdgeInsets
+                              .all(16),
+
                       child: Column(
                         children: [
 
                           const Icon(
-                            Icons.arrow_upward,
-                            color: Colors.red,
+                            Icons
+                                .arrow_upward,
+                            color:
+                                Colors.red,
                           ),
 
-                          const SizedBox(height: 8),
+                          const SizedBox(
+                              height: 8),
 
-                          const Text("Expense"),
+                          const Text(
+                            "Expense",
+                          ),
 
-                          const SizedBox(height: 5),
+                          const SizedBox(
+                              height: 5),
 
                           Text(
                             "₹${expense.toStringAsFixed(2)}",
-                            style: const TextStyle(
-                              color: Colors.red,
-                              fontSize: 22,
+
+                            style:
+                                const TextStyle(
+                              color:
+                                  Colors.red,
+                              fontSize:
+                                  22,
                             ),
                           ),
                         ],
@@ -152,15 +216,123 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
 
+            const SizedBox(height: 20),
+
+            // BUDGET OVERVIEW
+
+            Card(
+              elevation: 5,
+
+              child: Padding(
+                padding:
+                    const EdgeInsets.all(
+                        16),
+
+                child: Column(
+                  children: [
+
+                    const Text(
+                      "Budget Overview",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight:
+                            FontWeight.bold,
+                      ),
+                    ),
+
+                    const SizedBox(
+                        height: 15),
+
+                    Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment
+                              .spaceBetween,
+
+                      children: [
+
+                        const Text(
+                          "Budget",
+                        ),
+
+                        Text(
+                          "₹${budget.toStringAsFixed(2)}",
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(
+                        height: 10),
+
+                    Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment
+                              .spaceBetween,
+
+                      children: [
+
+                        const Text(
+                          "Remaining",
+                        ),
+
+                        Text(
+                          "₹${remainingBudget.toStringAsFixed(2)}",
+
+                          style:
+                              TextStyle(
+                            color:
+                                remainingBudget >=
+                                        0
+                                    ? Colors
+                                        .green
+                                    : Colors
+                                        .red,
+
+                            fontWeight:
+                                FontWeight
+                                    .bold,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(
+                        height: 15),
+
+                    LinearProgressIndicator(
+                      value: budget > 0
+                          ? budgetProgress
+                              .clamp(
+                              0.0,
+                              1.0,
+                            )
+                          : 0,
+                    ),
+
+                    const SizedBox(
+                        height: 10),
+
+                    Text(
+                      budget > 0
+                          ? "${(budgetProgress * 100).toStringAsFixed(1)}% Used"
+                          : "No Budget Set",
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
             const SizedBox(height: 25),
 
             const Align(
-              alignment: Alignment.centerLeft,
+              alignment:
+                  Alignment.centerLeft,
+
               child: Text(
                 "Recent Transactions",
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                  fontWeight:
+                      FontWeight.bold,
                 ),
               ),
             ),
@@ -168,34 +340,49 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 10),
 
             Expanded(
-              child: AppData.transactions.isEmpty
-                  ? const Center(
-                      child: Text(
-                        "No transactions yet",
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount:
-                          AppData.transactions.length,
-                      itemBuilder: (
-                        context,
-                        index,
-                      ) {
-                        return TransactionTile(
-                          transaction:
-                              AppData.transactions[index],
-                        );
-                      },
-                    ),
+              child:
+                  AppData.transactions.isEmpty
+
+                      ? const Center(
+                          child: Text(
+                            "No transactions yet",
+                          ),
+                        )
+
+                      : ListView.builder(
+                          itemCount:
+                              AppData.transactions
+                                          .length >
+                                      5
+                                  ? 5
+                                  : AppData
+                                      .transactions
+                                      .length,
+
+                          itemBuilder:
+                              (context,
+                                  index) {
+
+                            return TransactionTile(
+                              transaction:
+                                  AppData
+                                          .transactions[
+                                      index],
+                            );
+                          },
+                        ),
             ),
           ],
         ),
       ),
 
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton:
+          FloatingActionButton(
         onPressed: () async {
+
           await Navigator.push(
             context,
+
             MaterialPageRoute(
               builder: (context) =>
                   const AddTransactionScreen(),
@@ -204,7 +391,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
           setState(() {});
         },
-        child: const Icon(Icons.add),
+
+        child: const Icon(
+          Icons.add,
+        ),
       ),
     );
   }

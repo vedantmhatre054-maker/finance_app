@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'screens/reports_screen.dart';
 import 'data/app_data.dart';
 
 import 'screens/home_screen.dart';
@@ -48,6 +48,7 @@ class _MainScreenState
     HomeScreen(),
     TransactionsScreen(),
     ChartsScreen(),
+    ReportsScreen(),
     SettingsScreen(),
   ];
 
@@ -83,6 +84,11 @@ class _MainScreenState
             icon: Icon(Icons.bar_chart),
             label: "Charts",
           ),
+
+          BottomNavigationBarItem(
+          icon: Icon(Icons.analytics),
+          label: "Reports",
+        ),
 
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

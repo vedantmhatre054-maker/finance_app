@@ -5,6 +5,8 @@ class AppData {
 
   static List<Transaction> transactions = [];
 
+  static double monthlyBudget = 0;
+
   static Future<void> save() async {
     await StorageService.saveTransactions(
       transactions,

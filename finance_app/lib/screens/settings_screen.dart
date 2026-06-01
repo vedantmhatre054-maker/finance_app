@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'budget_screen.dart';
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -53,6 +53,36 @@ class _SettingsScreenState
             ),
           ),
 
+          const Divider(),
+
+            ListTile(
+              leading: const Icon(
+                Icons.savings,
+              ),
+
+              title: const Text(
+                "Budget Goal",
+              ),
+
+              subtitle: const Text(
+                "Set Monthly Budget",
+              ),
+
+              trailing: const Icon(
+                Icons.arrow_forward_ios,
+                size: 18,
+              ),
+
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const BudgetScreen(),
+                  ),
+                );
+              },
+            ),
           const Divider(),
 
           const ListTile(
