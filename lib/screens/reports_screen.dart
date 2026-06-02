@@ -41,6 +41,447 @@ class ReportsScreen extends StatelessWidget {
     return total;
   }
 
+    List<dynamic> getFilteredTransactions(
+        String reportType,
+      ) {
+
+        final now =
+            DateTime.now();
+
+        return AppData.transactions
+            .where((transaction) {
+
+          switch (reportType) {
+
+            case "Daily":
+
+              return transaction.date.day ==
+                      now.day &&
+                  transaction.date.month ==
+                      now.month &&
+                  transaction.date.year ==
+                      now.year;
+
+            case "Weekly":
+
+              return now
+                      .difference(
+                        transaction.date,
+                      )
+                      .inDays <=
+                  7;
+
+            case "Monthly":
+
+              return transaction
+                          .date.month ==
+                      now.month &&
+                  transaction.date.year ==
+                      now.year;
+
+            case "Yearly":
+
+              return transaction
+                      .date.year ==
+                  now.year;
+
+            default:
+              return true;
+          }
+        }).toList();
+      }
+
+    void showCsvPreview(
+  BuildContext context,
+  String reportType,
+) {
+
+  final transactions =
+      getFilteredTransactions(
+          reportType);
+
+  showDialog(
+    context: context,
+
+    builder: (context) {
+
+      return AlertDialog(
+        title: Text(
+          "$reportType CSV Preview",
+        ),
+
+        content: SizedBox(
+          width: 700,
+          height: 400,
+
+          child:
+              SingleChildScrollView(
+            scrollDirection:
+                Axis.horizontal,
+
+            child:
+                SingleChildScrollView(
+              child: DataTable(
+                columns: const [
+
+                  DataColumn(
+                    label:
+                        Text("Date"),
+                  ),
+
+                  DataColumn(
+                    label: Text(
+                        "Category"),
+                  ),
+
+                  DataColumn(
+                    label:
+                        Text("Type"),
+                  ),
+
+                  DataColumn(
+                    label:
+                        Text("Amount"),
+                  ),
+                ],
+
+                rows: transactions
+                    .map<DataRow>(
+                  (transaction) {
+
+                    return DataRow(
+                      cells: [
+
+                        DataCell(
+                          Text(
+                            "${transaction.date.day}/${transaction.date.month}/${transaction.date.year}",
+                          ),
+                        ),
+
+                        DataCell(
+                          Text(
+                            transaction
+                                .category,
+                          ),
+                        ),
+
+                        DataCell(
+                          Text(
+                            transaction
+                                .type,
+                          ),
+                        ),
+
+                        DataCell(
+                          Text(
+                            "₹${transaction.amount}",
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ).toList(),
+              ),
+            ),
+          ),
+        ),
+
+        actions: [
+
+          TextButton(
+            onPressed: () {
+              Navigator.pop(
+                  context);
+            },
+
+            child:
+                const Text("Close"),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+          void showCustomRangeDialog(
+          BuildContext context,
+        ) {
+
+          DateTime? startDate;
+          DateTime? endDate;
+
+          showDialog(
+            context: context,
+
+            builder: (context) {
+
+              return StatefulBuilder(
+                builder:
+                    (context,
+                        setDialogState) {
+
+                  return AlertDialog(
+                    title: const Text(
+                      "Custom Report",
+                    ),
+
+                    content: Column(
+                      mainAxisSize:
+                          MainAxisSize.min,
+
+                      children: [
+
+                        ElevatedButton(
+                          onPressed: () async {
+
+                            final picked =
+                                await showDatePicker(
+                              context: context,
+                              initialDate:
+                                  DateTime.now(),
+                              firstDate:
+                                  DateTime(2020),
+                              lastDate:
+                                  DateTime(2100),
+                            );
+
+                            if (picked != null) {
+
+                              setDialogState(
+                                () {
+                                  startDate =
+                                      picked;
+                                },
+                              );
+                            }
+                          },
+
+                          child: Text(
+                            startDate == null
+                                ? "Select Start Date"
+                                : "${startDate!.day}/${startDate!.month}/${startDate!.year}",
+                          ),
+                        ),
+
+                        const SizedBox(
+                          height: 10,
+                        ),
+
+                        ElevatedButton(
+                          onPressed: () async {
+
+                            final picked =
+                                await showDatePicker(
+                              context: context,
+                              initialDate:
+                                  DateTime.now(),
+                              firstDate:
+                                  DateTime(2020),
+                              lastDate:
+                                  DateTime(2100),
+                            );
+
+                            if (picked != null) {
+
+                              setDialogState(
+                                () {
+                                  endDate =
+                                      picked;
+                                },
+                              );
+                            }
+                          },
+
+                          child: Text(
+                            endDate == null
+                                ? "Select End Date"
+                                : "${endDate!.day}/${endDate!.month}/${endDate!.year}",
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    actions: [
+
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(
+                            context,
+                          );
+                        },
+
+                        child:
+                            const Text(
+                          "Cancel",
+                        ),
+                      ),
+
+                      ElevatedButton(
+                        onPressed: () {
+
+                          if (startDate !=
+                                  null &&
+                              endDate !=
+                                  null) {
+
+                            Navigator.pop(
+                              context,
+                            );
+
+                            showCustomRangePreview(
+                              context,
+                              startDate!,
+                              endDate!,
+                            );
+                          }
+                        },
+
+                        child:
+                            const Text(
+                          "Export",
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          );
+        }
+
+    void showCustomRangePreview(
+      BuildContext context,
+      DateTime startDate,
+      DateTime endDate,
+    ) {
+
+      final transactions =
+          AppData.transactions.where(
+        (transaction) {
+
+          return transaction.date
+                  .isAfter(
+                startDate.subtract(
+                  const Duration(
+                    days: 1,
+                  ),
+                ),
+              ) &&
+              transaction.date
+                  .isBefore(
+                endDate.add(
+                  const Duration(
+                    days: 1,
+                  ),
+                ),
+              );
+        },
+      ).toList();
+
+      showDialog(
+        context: context,
+
+        builder: (context) {
+
+          return AlertDialog(
+            title: Text(
+              "Custom Report\n${startDate.day}/${startDate.month}/${startDate.year} - ${endDate.day}/${endDate.month}/${endDate.year}",
+            ),
+
+            content: SizedBox(
+              width: 700,
+              height: 400,
+
+              child:
+                  SingleChildScrollView(
+                scrollDirection:
+                    Axis.horizontal,
+
+                child:
+                    SingleChildScrollView(
+                  child: DataTable(
+                    columns: const [
+
+                      DataColumn(
+                        label:
+                            Text("Date"),
+                      ),
+
+                      DataColumn(
+                        label:
+                            Text("Category"),
+                      ),
+
+                      DataColumn(
+                        label:
+                            Text("Type"),
+                      ),
+
+                      DataColumn(
+                        label:
+                            Text("Amount"),
+                      ),
+                    ],
+
+                    rows:
+                        transactions.map(
+                      (transaction) {
+
+                        return DataRow(
+                          cells: [
+
+                            DataCell(
+                              Text(
+                                "${transaction.date.day}/${transaction.date.month}/${transaction.date.year}",
+                              ),
+                            ),
+
+                            DataCell(
+                              Text(
+                                transaction.category,
+                              ),
+                            ),
+
+                            DataCell(
+                              Text(
+                                transaction.type,
+                              ),
+                            ),
+
+                            DataCell(
+                              Text(
+                                "₹${transaction.amount}",
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ).toList(),
+                  ),
+                ),
+              ),
+            ),
+
+            actions: [
+
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(
+                    context,
+                  );
+                },
+
+                child:
+                    const Text(
+                  "Close",
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
@@ -85,76 +526,123 @@ class ReportsScreen extends StatelessWidget {
               height: 50,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  showDialog(
+
+                  showModalBottomSheet(
                     context: context,
+
                     builder: (context) {
-                      return AlertDialog(
-                        title: const Text(
-                          "CSV Preview",
-                        ),
-                        content: SizedBox(
-                          width: 700,
-                          height: 400,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: SingleChildScrollView(
-                              child: DataTable(
-                                columns: const [
-                                  DataColumn(
-                                    label: Text("Date"),
-                                  ),
-                                  DataColumn(
-                                    label: Text("Category"),
-                                  ),
-                                  DataColumn(
-                                    label: Text("Type"),
-                                  ),
-                                  DataColumn(
-                                    label: Text("Amount"),
-                                  ),
-                                ],
-                                rows: AppData.transactions
-                                    .map(
-                                      (transaction) => DataRow(
-                                        cells: [
-                                          DataCell(
-                                            Text(
-                                              "${transaction.date.day}/${transaction.date.month}/${transaction.date.year}",
-                                            ),
-                                          ),
-                                          DataCell(
-                                            Text(
-                                              transaction.category,
-                                            ),
-                                          ),
-                                          DataCell(
-                                            Text(
-                                              transaction.type,
-                                            ),
-                                          ),
-                                          DataCell(
-                                            Text(
-                                              "₹${transaction.amount}",
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                    .toList(),
-                              ),
+
+                      return SafeArea(
+                        child: Column(
+                          mainAxisSize:
+                              MainAxisSize.min,
+
+                          children: [
+
+                            ListTile(
+                              leading:
+                                  const Icon(Icons.today),
+
+                              title:
+                                  const Text("Daily"),
+
+                              onTap: () {
+                                Navigator.pop(
+                                    context);
+
+                                showCsvPreview(
+                                  context,
+                                  "Daily",
+                                );
+                              },
                             ),
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text(
-                              "Close",
+
+                            ListTile(
+                              leading:
+                                  const Icon(
+                                      Icons.date_range),
+
+                              title:
+                                  const Text("Weekly"),
+
+                              onTap: () {
+                                Navigator.pop(
+                                    context);
+
+                                showCsvPreview(
+                                  context,
+                                  "Weekly",
+                                );
+                              },
                             ),
-                          ),
-                        ],
+
+                            ListTile(
+                              leading:
+                                  const Icon(
+                                    Icons.calendar_month,
+                                  ),
+
+                              title:
+                                  const Text(
+                                    "Monthly",
+                                  ),
+
+                              onTap: () {
+                                Navigator.pop(
+                                    context);
+
+                                showCsvPreview(
+                                  context,
+                                  "Monthly",
+                                );
+                              },
+                            ),
+
+                            ListTile(
+                              leading:
+                                  const Icon(
+                                    Icons.calendar_today,
+                                  ),
+
+                              title:
+                                  const Text(
+                                    "Yearly",
+                                  ),
+
+                              onTap: () {
+                                Navigator.pop(
+                                    context);
+
+                                showCsvPreview(
+                                  context,
+                                  "Yearly",
+                                );
+                              },
+                            ),
+                          ListTile(
+                                leading:
+                                    const Icon(
+                                      Icons.date_range,
+                                    ),
+
+                                title:
+                                    const Text(
+                                      "Custom Range",
+                                    ),
+
+                                onTap: () {
+
+                                  Navigator.pop(
+                                    context,
+                                  );
+
+                                  showCustomRangeDialog(
+                                    context,
+                                  );
+                                },
+                              ),  
+                          ],
+                        ),
                       );
                     },
                   );

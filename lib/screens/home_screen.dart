@@ -104,6 +104,25 @@ class _HomeScreenState
         child: Column(
           children: [
 
+            if (AppData.profile != null)
+                Align(
+                  alignment: Alignment.centerLeft,
+
+                  child: Text(
+                    "Hello, ${AppData.profile!.name} 👋",
+
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+
+              if (AppData.profile != null)
+                const SizedBox(
+                  height: 15,
+                ),
+
             // BALANCE CARD
 
             Card(
@@ -243,6 +262,68 @@ class _HomeScreenState
             ),
 
             const SizedBox(height: 20),
+
+            Card(
+  elevation: 5,
+
+  child: Padding(
+    padding:
+        const EdgeInsets.all(
+      16,
+    ),
+
+    child: Column(
+      children: [
+
+        const Text(
+          "Net Savings",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight:
+                FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(
+          height: 10,
+        ),
+
+        Text(
+          "₹${balance.toStringAsFixed(2)}",
+
+          style: TextStyle(
+            fontSize: 28,
+
+            fontWeight:
+                FontWeight.bold,
+
+            color: balance >= 0
+                ? Colors.green
+                : Colors.red,
+          ),
+        ),
+
+        const SizedBox(
+          height: 10,
+        ),
+
+        Text(
+          balance >= 0
+              ? "Excellent! Keep saving."
+              : "Expenses exceed income.",
+
+          style: TextStyle(
+            color: balance >= 0
+                ? Colors.green
+                : Colors.red,
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+
+const SizedBox(height: 20),
 
             // BUDGET OVERVIEW
 

@@ -8,6 +8,7 @@ import 'screens/transactions_screen.dart';
 import 'screens/charts_screen.dart';
 import 'screens/reports_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/profile_setup_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -87,7 +88,9 @@ class _FinanceTrackerAppState
           ? ThemeMode.dark
           : ThemeMode.light,
 
-      home: const MainScreen(),
+      home: AppData.profile == null
+        ? const ProfileSetupScreen()
+        : const MainScreen(),
     );
   }
 }

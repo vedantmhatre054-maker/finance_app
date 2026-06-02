@@ -181,18 +181,43 @@ class _TransactionsScreenState
     );
 
     if (searchText.isNotEmpty) {
-      transactions =
-          transactions.where(
-        (transaction) {
-          return transaction.category
-              .toLowerCase()
-              .contains(
-                searchText
-                    .toLowerCase(),
-              );
-        },
-      ).toList();
-    }
+
+        transactions =
+            transactions.where(
+          (transaction) {
+
+            final query =
+                searchText.toLowerCase();
+
+            final dateString =
+                "${transaction.date.day}/${transaction.date.month}/${transaction.date.year}";
+
+            return
+
+                transaction.category
+                    .toLowerCase()
+                    .contains(query)
+
+                ||
+
+                transaction.type
+                    .toLowerCase()
+                    .contains(query)
+
+                ||
+
+                transaction.amount
+                    .toString()
+                    .contains(query)
+
+                ||
+
+                dateString
+                    .toLowerCase()
+                    .contains(query);
+          },
+        ).toList();
+      }
 
     if (filterType != "All") {
       transactions =
@@ -203,6 +228,26 @@ class _TransactionsScreenState
         },
       ).toList();
     }
+
+    if (sortType == "Newest") {
+
+        transactions.sort(
+          (a, b) =>
+              b.date.compareTo(
+            a.date,
+          ),
+        );
+      }
+
+      if (sortType == "Oldest") {
+
+        transactions.sort(
+          (a, b) =>
+              a.date.compareTo(
+            b.date,
+          ),
+        );
+      }
 
     if (sortType ==
         "Amount High → Low") {
@@ -250,7 +295,7 @@ class _TransactionsScreenState
               decoration:
                   const InputDecoration(
                 hintText:
-                    "Search Category...",
+                    "Search Category , Amount, Date...",
                 prefixIcon:
                     Icon(Icons.search),
                 border:
@@ -343,6 +388,11 @@ class _TransactionsScreenState
                             Text(
                                 "Newest"),
                       ),
+
+                      DropdownMenuItem(
+                          value: "Oldest",
+                          child: Text("Oldest"),
+                        ),
 
                       DropdownMenuItem(
                         value:

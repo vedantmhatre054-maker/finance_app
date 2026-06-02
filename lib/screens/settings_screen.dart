@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'profile_setup_screen.dart';
 import '../main.dart';
 import 'budget_screen.dart';
+import '../data/app_data.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -67,6 +68,41 @@ class _SettingsScreenState
               Icons.dark_mode,
             ),
           ),
+
+          ListTile(
+          leading: const Icon(
+            Icons.person,
+          ),
+
+          title: const Text(
+            "Profile",
+          ),
+
+          subtitle: Text(
+            AppData.profile == null
+                ? "Setup Profile"
+                : AppData.profile!.name,
+          ),
+
+          trailing: const Icon(
+            Icons.arrow_forward_ios,
+            size: 18,
+          ),
+
+          onTap: () {
+
+            Navigator.push(
+              context,
+
+              MaterialPageRoute(
+                builder: (context) =>
+                    const ProfileSetupScreen(),
+              ),
+            ).then((_) {
+              setState(() {});
+            });
+          },
+        ),
 
           const Divider(),
 

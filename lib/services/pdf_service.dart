@@ -22,6 +22,55 @@ class PdfService {
     }
 
     final savings = income - expense;
+    
+    final totalTransactions =
+          AppData.transactions.length;
+
+      double highestExpense = 0;
+      double highestIncome = 0;
+
+      for (var transaction
+          in AppData.transactions) {
+
+        if (transaction.type ==
+            "Expense") {
+
+          if (transaction.amount >
+              highestExpense) {
+
+            highestExpense =
+                transaction.amount;
+          }
+        }
+
+        if (transaction.type ==
+            "Income") {
+
+          if (transaction.amount >
+              highestIncome) {
+
+            highestIncome =
+                transaction.amount;
+          }
+        }
+      }
+
+      double averageTransaction =
+
+          totalTransactions > 0
+
+              ? AppData.transactions
+                      .fold(
+                        0.0,
+                        (sum, transaction) =>
+                            sum +
+                            transaction.amount,
+                      ) /
+                  totalTransactions
+
+              : 0;
+
+
 
     pdf.addPage(
 
@@ -44,15 +93,33 @@ class PdfService {
           pw.SizedBox(height: 20),
 
           pw.Text(
-            "Income: ₹${income.toStringAsFixed(2)}",
+            "Income: Rs. ${income.toStringAsFixed(2)}",
           ),
 
           pw.Text(
-            "Expense: ₹${expense.toStringAsFixed(2)}",
+            "Expense: Rs. ${expense.toStringAsFixed(2)}",
           ),
 
           pw.Text(
-            "Savings: ₹${savings.toStringAsFixed(2)}",
+            "Savings: Rs. ${savings.toStringAsFixed(2)}",
+          ),
+
+          pw.SizedBox(height: 15),
+
+          pw.Text(
+            "Total Transactions: $totalTransactions",
+          ),
+
+          pw.Text(
+            "Highest Expense: Rs. ${highestExpense.toStringAsFixed(2)}",
+          ),
+
+          pw.Text(
+            "Highest Income: Rs. ${highestIncome.toStringAsFixed(2)}",
+          ),
+
+          pw.Text(
+            "Average Transaction: Rs. ${averageTransaction.toStringAsFixed(2)}",
           ),
 
           pw.SizedBox(height: 20),
@@ -87,8 +154,7 @@ class PdfService {
 
                     transaction.type,
 
-                    transaction.amount
-                        .toString(),
+                    "Rs. ${transaction.amount.toStringAsFixed(2)}",
                   ],
                 )
                 .toList(),
