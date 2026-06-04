@@ -65,7 +65,56 @@ class TransactionTile extends StatelessWidget {
                 Icons.delete,
                 color: Colors.red,
               ),
-              onPressed: onDelete,
+              onPressed: () {
+
+                showDialog(
+                  context: context,
+
+                  builder: (context) {
+
+                    return AlertDialog(
+
+                      title: const Text(
+                        "Delete Transaction",
+                      ),
+
+                      content: const Text(
+                        "Are you sure you want to delete this transaction?",
+                      ),
+
+                      actions: [
+
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(
+                              context,
+                            );
+                          },
+
+                          child: const Text(
+                            "No",
+                          ),
+                        ),
+
+                        TextButton(
+                          onPressed: () {
+
+                            Navigator.pop(
+                              context,
+                            );
+
+                            onDelete?.call();
+                          },
+
+                          child: const Text(
+                            "Yes",
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),

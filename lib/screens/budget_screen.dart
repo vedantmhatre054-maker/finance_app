@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/app_data.dart';
+import '../services/storage_service.dart';
 
 class BudgetScreen extends StatefulWidget {
   const BudgetScreen({super.key});
@@ -13,8 +14,7 @@ class BudgetScreen extends StatefulWidget {
 class _BudgetScreenState
     extends State<BudgetScreen> {
 
-  final TextEditingController
-      budgetController =
+  final TextEditingController budgetController =
       TextEditingController();
 
   @override
@@ -24,12 +24,10 @@ class _BudgetScreenState
     budgetController.text =
         AppData.monthlyBudget == 0
             ? ""
-            : AppData.monthlyBudget
-                .toString();
+            : AppData.monthlyBudget.toString();
   }
 
-  void saveBudget() {
-
+  Future<void> saveBudget() async {
     final amount =
         double.tryParse(
       budgetController.text,
@@ -40,9 +38,12 @@ class _BudgetScreenState
     }
 
     setState(() {
-      AppData.monthlyBudget =
-          amount;
+      AppData.monthlyBudget = amount;
     });
+
+    await StorageService.saveBudget(
+      amount,
+    );
 
     ScaffoldMessenger.of(context)
         .showSnackBar(
@@ -56,28 +57,22 @@ class _BudgetScreenState
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           "Budget Goal",
         ),
       ),
-
       body: Padding(
         padding:
             const EdgeInsets.all(16),
-
         child: Column(
           children: [
-
             TextField(
               controller:
                   budgetController,
-
               keyboardType:
                   TextInputType.number,
-
               decoration:
                   const InputDecoration(
                 labelText:
@@ -86,20 +81,16 @@ class _BudgetScreenState
                     OutlineInputBorder(),
               ),
             ),
-
             const SizedBox(
-                height: 20),
-
+              height: 20,
+            ),
             SizedBox(
               width:
                   double.infinity,
-
               height: 50,
-
               child: ElevatedButton(
                 onPressed:
                     saveBudget,
-
                 child: const Text(
                   "Save Budget",
                 ),

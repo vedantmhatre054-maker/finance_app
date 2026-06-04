@@ -13,6 +13,9 @@ class StorageService {
   static const String profileKey =
       "user_profile";
 
+  static const String budgetKey =
+     "monthly_budget";    
+
   static Future<void> saveTransactions(
     List<Transaction> transactions,
   ) async {
@@ -117,5 +120,29 @@ class StorageService {
     return UserProfile.fromJson(
       jsonDecode(data),
     );
+  }
+  static Future<void> saveBudget(
+    double budget,
+  ) async {
+
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    await prefs.setDouble(
+      budgetKey,
+      budget,
+    );
+  }
+
+  static Future<double> loadBudget()
+      async {
+
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    return prefs.getDouble(
+          budgetKey,
+        ) ??
+        0;
   }
 }

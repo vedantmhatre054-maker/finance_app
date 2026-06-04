@@ -17,7 +17,14 @@ class AppData {
   }
 
   static Future<void> load() async {
+
     transactions =
         await StorageService.loadTransactions();
+
+    profile =
+        await StorageService.loadProfile();
+
+    monthlyBudget =
+        await StorageService.loadBudget();
   }
 }
