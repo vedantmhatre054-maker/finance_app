@@ -3,6 +3,8 @@ import 'profile_setup_screen.dart';
 import '../main.dart';
 import 'budget_screen.dart';
 import '../data/app_data.dart';
+import 'goal_screen.dart';
+import '../services/storage_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -106,37 +108,73 @@ class _SettingsScreenState
 
           const Divider(),
 
-          ListTile(
-            leading: const Icon(
-              Icons.savings,
-            ),
-
-            title: const Text(
-              "Budget Goal",
-            ),
-
-            subtitle: const Text(
-              "Set Monthly Budget",
-            ),
-
-            trailing: const Icon(
-              Icons.arrow_forward_ios,
-              size: 18,
-            ),
-
-            onTap: () {
-              Navigator.push(
-                context,
-
-                MaterialPageRoute(
-                  builder: (context) =>
-                      const BudgetScreen(),
-                ),
-              );
-            },
+        ListTile(
+          leading: const Icon(
+            Icons.savings,
           ),
 
-          const Divider(),
+          title: const Text(
+            "Budget Goal",
+          ),
+
+          subtitle: const Text(
+            "Set Monthly Budget",
+          ),
+
+          trailing: const Icon(
+            Icons.arrow_forward_ios,
+            size: 18,
+          ),
+
+          onTap: () {
+            Navigator.push(
+              context,
+
+              MaterialPageRoute(
+                builder: (context) =>
+                    const BudgetScreen(),
+              ),
+            );
+          },
+        ),
+
+        const Divider(),
+
+        ListTile(
+          leading: const Icon(
+            Icons.flag,
+          ),
+
+          title: const Text(
+            "Financial Goal",
+          ),
+
+          subtitle: Text(
+            AppData.goal == null
+                ? "Set Your Goal"
+                : AppData.goal!.title,
+          ),
+
+          trailing: const Icon(
+            Icons.arrow_forward_ios,
+            size: 18,
+          ),
+
+          onTap: () {
+            Navigator.push(
+              context,
+
+              MaterialPageRoute(
+                builder: (context) =>
+                    const GoalScreen(),
+              ),
+            ).then((_) {
+              setState(() {});
+            });
+          },
+        ),
+
+        const Divider(),
 
           const ListTile(
             leading: Icon(Icons.info),
@@ -207,7 +245,85 @@ class _SettingsScreenState
               "Available",
             ),
           ),
+
+          const Divider(),
+
+            ListTile(
+              leading: const Icon(
+                Icons.delete_forever,
+                color: Colors.red,
+              ),
+
+              title: const Text(
+                "Reset All Data",
+              ),
+
+              subtitle: const Text(
+                "Delete everything",
+              ),
+
+              onTap: () {
+
+                showDialog(
+                  context: context,
+
+                  builder: (context) {
+
+                    return AlertDialog(
+
+                      title: const Text(
+                        "Reset All Data",
+                      ),
+
+                      content: const Text(
+                        "This will permanently delete all transactions, profile, budget, and goals. Continue?",
+                      ),
+
+                      actions: [
+
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+
+                          child: const Text(
+                            "Cancel",
+                          ),
+                        ),
+
+                        TextButton(
+                          onPressed: () async {
+
+                            await StorageService.clearAllData();
+
+                            AppData.reset();
+
+                            if (!mounted) return;
+
+                            Navigator.pushAndRemoveUntil(
+                              context,
+
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const ProfileSetupScreen(),
+                              ),
+
+                              (route) => false,
+                            );
+                          },
+
+                          child: const Text(
+                            "Reset",
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
         ],
+            
       ),
     );
   }

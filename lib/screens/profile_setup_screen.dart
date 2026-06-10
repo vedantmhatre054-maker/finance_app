@@ -35,50 +35,109 @@ class _ProfileSetupScreenState
 
   String currency = "INR";
 
-  Future<void> saveProfile()
-      async {
+      Future<void> saveProfile() async {
 
-    AppData.profile =
-        UserProfile(
-      name:
-          nameController.text,
+      if (nameController.text.trim().isEmpty) {
 
-      age:
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Please enter your name",
+            ),
+          ),
+        );
+
+        return;
+      }
+
+      final age =
           int.tryParse(
-                ageController.text,
-              ) ??
-              0,
+        ageController.text,
+      );
 
-      email:
-          emailController.text,
+      if (age == null || age <= 0) {
 
-      monthlyIncome:
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Please enter a valid age",
+            ),
+          ),
+        );
+
+        return;
+      }
+
+      if (!emailController.text
+          .contains("@")) {
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Please enter a valid email",
+            ),
+          ),
+        );
+
+        return;
+      }
+
+      final income =
           double.tryParse(
-                incomeController.text,
-              ) ??
-              0,
+        incomeController.text,
+      );
 
-      currency:
-          currency,
-    );
+      if (income == null ||
+          income <= 0) {
 
-    await StorageService
-        .saveProfile(
-      AppData.profile!,
-    );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Please enter monthly income",
+            ),
+          ),
+        );
 
-    if (!mounted) return;
+        return;
+      }
 
-        Navigator.pushReplacement(
+      AppData.profile =
+          UserProfile(
+        name:
+            nameController.text.trim(),
+
+        age: age,
+
+        email:
+            emailController.text.trim(),
+
+        monthlyIncome:
+            income,
+
+        currency:
+            currency,
+      );
+
+      await StorageService
+          .saveProfile(
+        AppData.profile!,
+      );
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
         context,
 
         MaterialPageRoute(
-            builder: (context) =>
-                const MainScreen(),
+          builder: (context) =>
+              const MainScreen(),
         ),
-        );
-     }
-
+      );
+    }
   @override
   Widget build(
       BuildContext context) {

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/transaction.dart';
 import '../models/user_profile.dart';
+import '../models/financial_goal.dart';
 
 class StorageService {
 
@@ -14,7 +15,10 @@ class StorageService {
       "user_profile";
 
   static const String budgetKey =
-     "monthly_budget";    
+       "monthly_budget";    
+
+  static const String goalKey =
+       "financial_goal";
 
   static Future<void> saveTransactions(
     List<Transaction> transactions,
@@ -144,5 +148,49 @@ class StorageService {
           budgetKey,
         ) ??
         0;
+  }
+
+  static Future<void> saveGoal(
+    FinancialGoal goal,
+  ) async {
+
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    await prefs.setString(
+      goalKey,
+      jsonEncode(
+        goal.toJson(),
+      ),
+    );
+  }
+
+  static Future<FinancialGoal?>
+      loadGoal() async {
+
+      final prefs =
+          await SharedPreferences.getInstance();
+
+      final data =
+          prefs.getString(
+        goalKey,
+      );
+
+      if (data == null) {
+        return null;
+      }
+
+      return FinancialGoal.fromJson(
+        jsonDecode(data),
+      );
+    }
+
+    static Future<void> clearAllData()
+      async {
+
+    final prefs =
+        await SharedPreferences.getInstance();
+
+    await prefs.clear();
   }
 }

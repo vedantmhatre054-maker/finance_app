@@ -49,6 +49,61 @@ class _HomeScreenState
     return income - expense;
   }
 
+  Widget buildStatCard(
+  String title,
+  String amount,
+  IconData icon,
+  Color color,
+) {
+  return Card(
+    elevation: 3,
+
+    child: Padding(
+      padding:
+          const EdgeInsets.all(12),
+
+      child: Column(
+        children: [
+
+          Icon(
+            icon,
+            color: color,
+            size: 24,
+          ),
+
+          const SizedBox(
+            height: 5,
+          ),
+
+          Text(
+            title,
+
+            style: const TextStyle(
+              fontSize: 14,
+            ),
+          ),
+
+          const SizedBox(
+            height: 5,
+          ),
+
+          Text(
+            amount,
+
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight:
+                  FontWeight.bold,
+
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
   @override
   Widget build(BuildContext context) {
 
@@ -125,203 +180,133 @@ class _HomeScreenState
 
             // BALANCE CARD
 
-            Card(
-              elevation: 5,
-
-              child: Padding(
-                padding:
-                    const EdgeInsets.all(
-                        20),
-
-                child: Column(
-                  children: [
-
-                    const Text(
-                      "Current Balance",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-
-                    const SizedBox(
-                        height: 10),
-
-                    Text(
-                      "₹${balance.toStringAsFixed(2)}",
-
-                      style:
-                          const TextStyle(
-                        fontSize: 32,
-                        fontWeight:
-                            FontWeight
-                                .bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
+            
             // INCOME & EXPENSE
 
-            Row(
-              children: [
+    // DASHBOARD
+    Row(
+   children: [
 
-                Expanded(
-                  child: Card(
-                    child: Padding(
-                      padding:
-                          const EdgeInsets
-                              .all(16),
-
-                      child: Column(
-                        children: [
-
-                          const Icon(
-                            Icons
-                                .arrow_downward,
-                            color:
-                                Colors.green,
-                          ),
-
-                          const SizedBox(
-                              height: 8),
-
-                          const Text(
-                            "Income",
-                          ),
-
-                          const SizedBox(
-                              height: 5),
-
-                          Text(
-                            "₹${income.toStringAsFixed(2)}",
-
-                            style:
-                                const TextStyle(
-                              color: Colors
-                                  .green,
-                              fontSize:
-                                  22,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(width: 10),
-
-                Expanded(
-                  child: Card(
-                    child: Padding(
-                      padding:
-                          const EdgeInsets
-                              .all(16),
-
-                      child: Column(
-                        children: [
-
-                          const Icon(
-                            Icons
-                                .arrow_upward,
-                            color:
-                                Colors.red,
-                          ),
-
-                          const SizedBox(
-                              height: 8),
-
-                          const Text(
-                            "Expense",
-                          ),
-
-                          const SizedBox(
-                              height: 5),
-
-                          Text(
-                            "₹${expense.toStringAsFixed(2)}",
-
-                            style:
-                                const TextStyle(
-                              color:
-                                  Colors.red,
-                              fontSize:
-                                  22,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            Card(
-  elevation: 5,
-
-  child: Padding(
-    padding:
-        const EdgeInsets.all(
-      16,
+    Expanded(
+      child: buildStatCard(
+        "Income",
+        "₹${income.toStringAsFixed(0)}",
+        Icons.arrow_downward,
+        Colors.green,
+      ),
     ),
 
-    child: Column(
-      children: [
+    Expanded(
+      child: buildStatCard(
+        "Expense",
+        "₹${expense.toStringAsFixed(0)}",
+        Icons.arrow_upward,
+        Colors.red,
+      ),
+    ),
+  ],
+),
 
-        const Text(
-          "Net Savings",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight:
-                FontWeight.bold,
+const SizedBox(height: 10),
+
+Row(
+  children: [
+
+    Expanded(
+      child: buildStatCard(
+        "Balance",
+        "₹${balance.toStringAsFixed(0)}",
+        Icons.account_balance_wallet,
+        Colors.blue,
+      ),
+    ),
+
+    Expanded(
+      child: buildStatCard(
+        "Budget Left",
+        "₹${remainingBudget.toStringAsFixed(0)}",
+        Icons.savings,
+        remainingBudget >= 0
+            ? Colors.green
+            : Colors.red,
+      ),
+    ),
+  ],
+),
+
+const SizedBox(height: 20),
+
+    if (AppData.goal != null)
+
+  Card(
+    elevation: 5,
+
+    child: Padding(
+      padding:
+          const EdgeInsets.all(16),
+
+      child: Column(
+        children: [
+
+          const Text(
+            "🎯 Financial Goal",
+
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight:
+                  FontWeight.bold,
+            ),
           ),
-        ),
 
-        const SizedBox(
-          height: 10,
-        ),
-
-        Text(
-          "₹${balance.toStringAsFixed(2)}",
-
-          style: TextStyle(
-            fontSize: 28,
-
-            fontWeight:
-                FontWeight.bold,
-
-            color: balance >= 0
-                ? Colors.green
-                : Colors.red,
+          const SizedBox(
+            height: 10,
           ),
-        ),
 
-        const SizedBox(
-          height: 10,
-        ),
+          Text(
+            AppData.goal!.title,
 
-        Text(
-          balance >= 0
-              ? "Excellent! Keep saving."
-              : "Expenses exceed income.",
-
-          style: TextStyle(
-            color: balance >= 0
-                ? Colors.green
-                : Colors.red,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight:
+                  FontWeight.bold,
+            ),
           ),
-        ),
-      ],
+
+          const SizedBox(
+            height: 10,
+          ),
+
+          Text(
+            "₹${balance.toStringAsFixed(0)} / ₹${AppData.goal!.targetAmount.toStringAsFixed(0)}",
+          ),
+
+          const SizedBox(
+            height: 10,
+          ),
+
+          LinearProgressIndicator(
+            value:
+                (balance /
+                        AppData.goal!
+                            .targetAmount)
+                    .clamp(
+              0.0,
+              1.0,
+            ),
+          ),
+
+          const SizedBox(
+            height: 10,
+          ),
+
+          Text(
+            "${((balance / AppData.goal!.targetAmount) * 100).clamp(0, 100).toStringAsFixed(1)}% Complete",
+          ),
+        ],
+      ),
     ),
   ),
-),
+
 
 const SizedBox(height: 20),
 

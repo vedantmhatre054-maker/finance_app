@@ -97,7 +97,11 @@ class _AddTransactionScreenState
             children: [
 
               DropdownMenu<String>(
-            controller: categoryController,
+               controller: categoryController,
+
+                  enableFilter: true,
+                  enableSearch: true,
+                  requestFocusOnTap: true,
 
             width: 350,
 
