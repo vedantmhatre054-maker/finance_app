@@ -9,6 +9,7 @@ import 'screens/charts_screen.dart';
 import 'screens/reports_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/profile_setup_screen.dart';
+import 'screens/ai_chat_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -114,6 +115,7 @@ class _MainScreenState
     ChartsScreen(),
     ReportsScreen(),
     SettingsScreen(),
+    AIChatScreen(),
   ];
 
   @override
@@ -163,6 +165,11 @@ class _MainScreenState
             icon: Icon(Icons.settings),
             label: "Settings",
           ),
+
+          BottomNavigationBarItem(
+          icon: Icon(Icons.smart_toy),
+          label: "AI",
+         ),
         ],
       ),
     );

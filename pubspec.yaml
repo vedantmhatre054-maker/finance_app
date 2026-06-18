@@ -39,11 +39,14 @@ dependencies:
   csv: ^6.0.0
   pdf: ^3.11.0
   printing: ^5.13.4
+  google_generative_ai: ^0.4.7
   
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+   
 
   flutter_native_splash: ^2.4.7
 
